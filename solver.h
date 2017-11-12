@@ -7,7 +7,7 @@
 
 class solver {
 public:
-	typedef float value_t;
+	typedef double value_t;
 
 public:
 	class answer {
@@ -21,8 +21,8 @@ public:
 	};
 
 public:
-	float get_set_table(const board2x3& state, bool is_before, float value){
-		std::vector<float>* table = is_before ? &table_before : &table_after;
+	double get_set_table(const board2x3& state, bool is_before, double value){
+		std::vector<double>* table = is_before ? &table_before : &table_after;
 		int idx = 0;
 		for(int i=0; i<6; i++)
 	    	idx += state(i) * std::pow(33, i);
@@ -78,8 +78,8 @@ public:
 		else ecpected_max(after, true);
 	}
 
-	float ecpected_max(const board2x3& state, bool is_before){
-		float value = get_set_table(state, is_before, -1);
+	double ecpected_max(const board2x3& state, bool is_before){
+		double value = get_set_table(state, is_before, -1);
 		if(value > -1) return value;
 		else value = 0;
 
@@ -87,16 +87,16 @@ public:
 			int opcode[] = { 0, 1, 2, 3 };
 			for (int op : opcode) {
 				board2x3 b = state;
-				float r = b.move(op);
-				if (r > -1){
-					float value_next = r +  ecpected_max(b, false);
+				double r = b.move(op);
+				if (r != -1){
+					double value_next = r + ecpected_max(b, false);
 					if(value_next > value) value = value_next;
 				}
 			}
 		}
 		else{
 			int space[] = { 0, 1, 2, 3, 4, 5 };
-			float empty= 0;
+			double empty= 0;
 			for (int pos : space) if (state(pos) == 0) empty++;
 			if(empty > 0){
 				for (int pos : space) {
@@ -105,8 +105,8 @@ public:
 						action move = action::place(tile, pos);
 						board2x3 b = state;
 						move.apply(b);
-						float prob = (tile == 1) ? 0.9 : 0.1;
-						value += (1/empty) * prob * ecpected_max(b, true);
+						double prob = (tile == 1) ? 0.9 : 0.1;
+						value += (prob/empty) * ecpected_max(b, true);
 					}
 				}
 			}
@@ -136,6 +136,6 @@ public:
 
 private:
 	// TODO: place your transposition table here
-	std::vector<float> table_before;
-	std::vector<float> table_after;
+	std::vector<double> table_before;
+	std::vector<double> table_after;
 };

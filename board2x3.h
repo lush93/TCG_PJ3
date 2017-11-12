@@ -57,7 +57,7 @@ private:
 
 	int move_left(int& left, int& right) {
 		if (left) {
-			if ((left==1 && right==1)|| std::abs(left - right) == 1) {
+			if ((left==1 && right==1) || (std::abs(left - right) == 1 && right !=0)) {
 				left += (right <= left) ? 1 : 2;
 				right = 0;
 				return table[left];
